@@ -37,5 +37,4 @@ class MenuRepository : MenuInterface {
     override fun deleteMenu(id: String): Boolean {
         return itemsMenu.removeIf { makanan -> makanan.id == id }
     }
-
 }
