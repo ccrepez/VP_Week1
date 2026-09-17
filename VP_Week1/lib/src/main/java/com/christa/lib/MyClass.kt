@@ -10,7 +10,7 @@ data class ItemMenu (
 )
 
 data class ItemOrder (
-    val itemMenu: itemMenu,
+    val itemMenu: ItemMenu,
     val quantity: Int
 )
 
