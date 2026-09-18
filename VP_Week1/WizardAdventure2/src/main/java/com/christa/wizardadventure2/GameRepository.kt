@@ -49,7 +49,7 @@ class GameRepository : GameInterface {
     override fun generateEnemy(): Enemy {
         val types = ElementType.values()
         val randomType = types[Random.nextInt(types.size)]
-        return Enemy(type = randomType)
+        return Enemy(type = randomType, name = "${randomType}mon")
     }
 
     override fun attackEnemy(enemy: Enemy, attackType: ElementType): Int {
@@ -88,7 +88,7 @@ class GameRepository : GameInterface {
         return 10
     }
 
-    override fun addKillAndCheckEvolution(): String {
+    override fun updateKillsAndCheckEvolution(): String {
         player.kills += 1
         var message = "You defeated an enemy! Total kills: ${player.kills}."
 
