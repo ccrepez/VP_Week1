@@ -7,16 +7,17 @@ class ConsoleUI (
     fun start() {
         var isRunning = true
         while (isRunning) {
-            print("=== RESTAURANT SYSTEM ===")
-            print("1. Make Order")
-            print("2. View Orders")
-            print("3. View Menu")
-            print("4. Add Menu")
-            print("5. Edit Menu")
-            print("6. Delete Menu")
-            print("7. Exit")
+            println("=== RESTAURANT SYSTEM ===")
+            println("1. Make Order")
+            println("2. View Orders")
+            println("3. View Menu")
+            println("4. Add Menu")
+            println("5. Edit Menu")
+            println("6. Delete Menu")
+            println("7. Exit")
             print("Choose an option: ")
             val inputString = readLine()
+            println()
 
             try {
                 val input = inputString!!.toInt()
