@@ -1,5 +1,8 @@
 package com.christa.wizardadventure2
 
+import kotlin.random.Random
+import kotlin.random.nextInt
+
 class GameRepository : GameInterface {
     private var player = Player("Wizard")
 
@@ -43,6 +46,28 @@ class GameRepository : GameInterface {
         return "No MP Potion left!"
     }
 
+    override fun generateEnemy(): Enemy {
+        val types = ElementType.values()
+        val randomType = types[Random.nextInt(types.size)]
+        return Enemy(type = randomType)
+    }
+
+    override fun attackEnemy(enemy: Enemy, attackType: ElementType): Int {
+        player.mana -= 10
+        var damage = player.baseDamage
+
+        val isSuperEffective = (attackType == ElementType.FIRE && enemy.type == ElementType.GRASS) ||
+                (attackType == ElementType.WATER && enemy.type == ElementType.FIRE) ||
+                (attackType == ElementType.GRASS && enemy.type == ElementType.WATER)
+
+        if (isSuperEffective) {
+            damage += 2
+        }
+
+        enemy.hp -= damage
+        return damage
+    }
+
     override fun triggerLifesteal(): Int {
         if (player.isEvolved && player.lifesteal > 0) {
             val heal = player.lifesteal
@@ -56,5 +81,31 @@ class GameRepository : GameInterface {
             return heal
         }
         return 0
+    }
+
+    override fun takeEnemyDamage(): Int {
+        player.hp -= 10
+        return 10
+    }
+
+    override fun addKillAndCheckEvolution(): String {
+        player.kills += 1
+        var message = "You defeated an enemy! Total kills: ${player.kills}."
+
+        if (!player.isEvolved && player.kills >= 5) {
+            player.isEvolved = true
+            player.maxHp = (player.maxHp * 1.5).toInt()
+            player.hp = player.maxHp
+            player.maxMana = (player.maxMana * 1.5).toInt()
+            player.mana = player.maxMana
+            player.baseDamage = (player.baseDamage * 1.5).toInt()
+            player.lifesteal = 1
+            message += "[EVOLUTION] You have became a Strong Wizard! HP & Mana recovered! Lifesteal skill is opened (Recovered 1 HP per attack)"
+        } else if (player.isEvolved) {
+            player.lifesteal += 1
+            message += "Lifesteal increased to ${player.lifesteal}!"
+        }
+
+        return message
     }
 }
