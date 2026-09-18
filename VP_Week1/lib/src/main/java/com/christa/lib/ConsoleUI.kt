@@ -130,4 +130,101 @@ class ConsoleUI (
             println("Invalid menu number!")
         }
     }
+
+    private fun deleteMenu() {
+        viewMenu()
+        val menus = menuRepository.viewMenu()
+        if (menus.isEmpty()) return
+
+        print("Select menu number to delete (0 to cancel): ")
+        val indexString = readLine()
+        var index = -2
+
+        try {
+            index = inputString!!.toInt() - 1
+        } catch (e: NumberFormatException) {
+
+        }
+
+        if (index == -1) {
+            println("Editing cancelled.")
+            return
+        }
+
+        if (index >= 0 && index < menus.size) {
+            val itemToDelete = menus[index]
+            val success = menuRepository.deleteItemMenu(itemToDelete.id)
+
+            if (success) {
+                println("${itemToDelete.name} has been deleted.")
+            } else {
+                println("Failed to delete.")
+            }
+        } else {
+            println("Invalid menu number!")
+        }
+    }
+
+    private fun makeOrder() {
+        val menus = menuRepository.viewMenu()
+        if (menus.isEmpty()) {
+            println("Cannot make order, menu is empty!")
+            return
+        }
+
+        print("Enter customer name: ")
+        val customerName = readLine()
+        val currentOrderItems = ArrayList<OrderItem>()
+        val ordering = true
+
+        while (ordering) {
+            viewMenu()
+            print("Select menu number to order (0 to finish ordering): ")
+            val indexString = readLine()
+            var index = -2
+
+            try {
+                index = inputString!!.toInt() - 1
+            } catch (e: NumberFormatException) {
+
+            }
+
+            if (index == -1) {
+                ordering = false
+            } else if (index >= 0 && index < menus.size) {
+                print("Enter quantity for ${menus[index].name}: ")
+                val qtyString = readLine()
+                var qty = 0
+
+                try {
+                    qty = qtyInputStr!!.toInt()
+                } catch (e: NumberFormatException) {
+
+                }
+
+                if (qty > 0) {
+                    currentOrderItems.add(ItemOrder(menus[index], qty))
+                    println("Added to order!")
+                } else {
+                    println("Invalid quantity!")
+                }
+            } else {
+                println("Invalid menu number!")
+            }
+        }
+
+        if (currentOrderItems.isNotEmpty()) {
+            var total = 0
+            for (i in 0 until currentOrderItems.size) {
+                val pesanan = currentOrderItems[i]
+                total += pesanan.itemMenu.price * pesanan.quantity
+            }
+
+            val newOrder = Order(customerName = customerName, items = currentOrderItems, totalPrice = total)
+            val response = orderRepository.addOrder(newOrder)
+            println("$response Total: $total")
+        } else {
+            println("Order cancelled (no items selected).")
+        }
+    }
 }
