@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "VP_Week1"
 include(":app")
 include(":lib")
+include(":WizardAdventure2")
