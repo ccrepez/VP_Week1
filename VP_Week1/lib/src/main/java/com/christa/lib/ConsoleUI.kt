@@ -1,7 +1,8 @@
 package com.christa.lib
 
 class ConsoleUI (
-    private val menuRepository: MenuInterface
+    private val menuRepository: MenuInterface,
+    private val orderRepository: OrderRepository
 ) {
     fun start() {
         var isRunning = true
@@ -24,6 +25,14 @@ class ConsoleUI (
                     makeOrder()
                 } else if (input == 2) {
                     viewOrders()
+                } else if (input == 3) {
+                    viewMenu()
+                } else if (input == 4) {
+                    addMenu()
+                } else if (input == 5) {
+                    editMenu()
+                } else if (input == 6) {
+                    deleteMenu()
                 } else if (input == 7) {
                     isRunning = false
                 } else {
@@ -32,6 +41,24 @@ class ConsoleUI (
             } catch (e: NumberFormatException) {
                 println("Invalid input! Please input a number.")
             }
+        }
+    }
+
+    private fun viewOrders() {
+        println("=== ALL ORDERS ===")
+        val orders = orderRepository.viewOrders()
+        if (orders.isEmpty()) {
+            println("No orders yet!")
+            return
+        }
+        for (order in orders) {
+            println("------ ${order.customerName}'s ORDER ------")
+            for (i in 0 until order.items.size) {
+                val pesanan = order.items[i]
+                println("${i+1}. ${pesanan.itemMenu.name} x${pesanan.quantity} $${pesanan.itemMenu.price}")
+            }
+            println("---------------------------------")
+            println("TOTAL $${order.totalPrice}")
         }
     }
 
@@ -73,8 +100,8 @@ class ConsoleUI (
             }
         }
 
-        val newItem = MenuItem(name = name, description = desc, price = price)
-        val response = menuRepository.addMenuItem(newItem)
+        val newItem = ItemMenu(name = name!!, description = desc!!, price = price)
+        val response = menuRepository.addMenu(newItem)
         println(response)
     }
 
@@ -88,7 +115,7 @@ class ConsoleUI (
         var index = -2
 
         try {
-            index = inputString!!.toInt() - 1
+            index = indexString!!.toInt() - 1
         } catch (e: NumberFormatException) {
 
         }
@@ -141,7 +168,7 @@ class ConsoleUI (
         var index = -2
 
         try {
-            index = inputString!!.toInt() - 1
+            index = indexString!!.toInt() - 1
         } catch (e: NumberFormatException) {
 
         }
@@ -153,7 +180,7 @@ class ConsoleUI (
 
         if (index >= 0 && index < menus.size) {
             val itemToDelete = menus[index]
-            val success = menuRepository.deleteItemMenu(itemToDelete.id)
+            val success = menuRepository.deleteMenu(itemToDelete.id)
 
             if (success) {
                 println("${itemToDelete.name} has been deleted.")
@@ -174,8 +201,8 @@ class ConsoleUI (
 
         print("Enter customer name: ")
         val customerName = readLine()
-        val currentOrderItems = ArrayList<OrderItem>()
-        val ordering = true
+        val currentOrderItems = ArrayList<ItemOrder>()
+        var ordering = true
 
         while (ordering) {
             viewMenu()
@@ -184,7 +211,7 @@ class ConsoleUI (
             var index = -2
 
             try {
-                index = inputString!!.toInt() - 1
+                index = indexString!!.toInt() - 1
             } catch (e: NumberFormatException) {
 
             }
@@ -197,7 +224,7 @@ class ConsoleUI (
                 var qty = 0
 
                 try {
-                    qty = qtyInputStr!!.toInt()
+                    qty = qtyString!!.toInt()
                 } catch (e: NumberFormatException) {
 
                 }
@@ -214,15 +241,15 @@ class ConsoleUI (
         }
 
         if (currentOrderItems.isNotEmpty()) {
-            var total = 0
+            var total = 0.0
             for (i in 0 until currentOrderItems.size) {
                 val pesanan = currentOrderItems[i]
                 total += pesanan.itemMenu.price * pesanan.quantity
             }
 
-            val newOrder = Order(customerName = customerName, items = currentOrderItems, totalPrice = total)
+            val newOrder = Order(customerName = customerName!!, items = currentOrderItems, totalPrice = total)
             val response = orderRepository.addOrder(newOrder)
-            println("$response Total: $total")
+            println("$response Total: $$total")
         } else {
             println("Order cancelled (no items selected).")
         }
