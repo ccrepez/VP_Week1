@@ -17,6 +17,6 @@ data class ItemOrder (
 data class Order(
     val id: String = UUID.randomUUID().toString(),
     val customerName: String,
-    val items: List<itemOrder>,
+    val items: List<ItemOrder>,
     val totalPrice: Double
 )
