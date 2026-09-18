@@ -50,7 +50,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
         val name = readLine() ?: "Wizard"
         val finalName = if (name.isEmpty()) "Wizard" else name
         gameRepository.initializePlayer(finalName)
-        println("Good luck, $finalName! You're gonna need it!")
+        println("Good luck, $finalName!")
     }
 
     private fun viewStats() {
@@ -73,6 +73,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
             println("c. Rename self")
             println("d. Back")
             print("> ")
+            println()
 
             val choice = readLine()
 
@@ -81,7 +82,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
             } else if (choice == "b") {
                 println(gameRepository.drinkHpPotion())
             } else if (choice == "c") {
-                println("Enter new name: ")
+                print("Enter new name: ")
                 val newName = readLine()
                 if (!newName.isNullOrBlank()) {
                     gameRepository.renamePlayer(newName)
