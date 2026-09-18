@@ -50,7 +50,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
         val name = readLine() ?: "Wizard"
         val finalName = if (name.isEmpty()) "Wizard" else name
         gameRepository.initializePlayer(finalName)
-        println("Good luck,", $finalName! Youre gonna need it!")
+        println("Good luck, $finalName! You're gonna need it!")
     }
 
     private fun viewStats() {
@@ -79,7 +79,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
             if (choice == "a") {
                 println(gameRepository.drinkMpPotion())
             } else if (choice == "b") {
-                println(gameRepository.drinkMpPotion())
+                println(gameRepository.drinkHpPotion())
             } else if (choice == "c") {
                 println("Enter new name: ")
                 val newName = readLine()
@@ -103,7 +103,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
         while (inBattle) {
             val p = gameRepository.getPlayer()
             println("--- BATTLE ---")
-            println("\${p.name}")
+            println("${p.name}")
             println("HP: ${p.hp}/ ${p.maxHp} | Mana: ${p.mana}/ ${p.maxMana}")
             println("HP Pots: ${p.hpPots} | MP Pots: ${p.mpPots}")
 
@@ -118,7 +118,7 @@ class ConsoleUI(private val gameRepository: GameInterface) {
             print("> ")
 
             val choice = readLine()
-            val playerActed = false
+            var playerActed = false
 
             if (choice == "a" || choice == "b" || choice == "c") {
                 if (p.mana < 10) {
